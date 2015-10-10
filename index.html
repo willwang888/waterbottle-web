@@ -1,14 +1,52 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>WaterBottle</title>
+	<title>Water Bottle</title>
 </head>
 <body>
-	<h1>WaterBottle</h1>
-
-	<script src="http://js.leapmotion.com/leap-0.6.4.js"></script>
+	<script src="https://cdn.firebase.com/js/client/2.3.1/firebase.js"></script>
+	<script src="https://js.leapmotion.com/leap-0.6.4.js"></script>
 	<script>
-		console.log("Hello world.");
+		var myFirebaseRef = new Firebase("https://resplendent-heat-833.firebaseio.com/")
+		myFirebaseRef.set({isCircle: false});
+
+		var counter_max = 15;
+		var counter_threshhold = 10;
+		var counter_current = 0;
+
+
+		var myController = Leap.loop({enableGesture: true}, function(frame) {
+			// detect if gesture is made
+			if(frame.gestures[0] != undefined) {
+				if (frame.gestures[0].type === "circle" && counter_current < counter_max) {
+					counter_current++;
+				}
+			}
+			else if (counter_current > 0) {
+				counter_current--;
+			}
+
+			// check if gesture count is above threshhold
+			if(counter_current > counter_threshhold) {
+				myFirebaseRef.update({isCircle: true});
+			}
+			else {
+				myFirebaseRef.update({isCircle: false});
+			}
+		});
+		// var a = "1", var b = 1;
+		// if (a == b) true
+		// if (a === b) false
+		// setInterval(function() {
+		// 	// var controller = new Leap.Controller();
+		// 	my_controller.enableGesture(Gesture.Type.TYPE_SWIPE);
+		// 	if (Gesture.type == swipe){
+		// 	// var timestamp = gesture.swipe.time, i++
+		// 	// latestTimestamp: timestamp, 
+		// 	myFirebaseRef.update({numGestures: i});
+		// 	i++;
+		// }
+		// }, 1000);	
 	</script>
 </body>
 </html>
